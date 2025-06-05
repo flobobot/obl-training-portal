@@ -1,0 +1,227 @@
+[
+  {
+    "name": "Martinez",
+    "level": 2,
+    "category": "Classic",
+    "glassware": "Nick & Nora",
+    "method": "Stirred",
+    "ingredients": [
+      "40ml Gin",
+      "25ml Sweet Vermouth",
+      "5ml Maraschino Liqueur",
+      "2 dashes Orange Bitters"
+    ],
+    "proTip": "Chill the glass well — this drink loses charm fast when warm.",
+    "didYouKnow": "The Martinez is often considered a precursor to the modern Martini."
+  },
+  {
+    "name": "Negroni",
+    "level": 1,
+    "category": "Classic",
+    "glassware": "Rocks",
+    "method": "Stirred",
+    "ingredients": [
+      "25ml Gin",
+      "25ml Sweet Vermouth",
+      "25ml Campari"
+    ],
+    "proTip": "Orange peel, not wedge — oils matter.",
+    "didYouKnow": "Named after Count Negroni, who requested gin instead of soda in his Americano."
+  },
+  {
+    "name": "Whiskey Sour",
+    "level": 1,
+    "category": "Sours",
+    "glassware": "Coupette",
+    "method": "Shaken",
+    "ingredients": [
+      "50ml Bourbon",
+      "25ml Lemon Juice",
+      "20ml Sugar Syrup",
+      "Optional: Egg White"
+    ],
+    "proTip": "Dry shake first if using egg white — texture is key.",
+    "didYouKnow": "Dates back to naval ships needing a tasty way to serve citrus."
+  },
+  {
+    "name": "Pisco Sour",
+    "level": 2,
+    "category": "Sours",
+    "glassware": "Coupette",
+    "method": "Shaken",
+    "ingredients": [
+      "50ml Pisco",
+      "25ml Lime Juice",
+      "20ml Sugar Syrup",
+      "1 Egg White",
+      "3 dashes Angostura Bitters"
+    ],
+    "proTip": "Bitters on top are for aromatics — don’t overdo it.",
+    "didYouKnow": "The Pisco Sour is Peru’s national drink, celebrated every first Saturday of February."
+  },
+  {
+    "name": "Old Fashioned",
+    "level": 1,
+    "category": "Classic",
+    "glassware": "Rocks",
+    "method": "Built",
+    "ingredients": [
+      "50ml Bourbon or Rye",
+      "1 Sugar Cube",
+      "2–3 dashes Angostura Bitters",
+      "Orange Peel"
+    ],
+    "proTip": "Dissolve the sugar fully — it’s a cocktail, not a crunch-fest.",
+    "didYouKnow": "The term 'cocktail' was originally defined using an Old Fashioned-style recipe in 1806."
+  },
+  {
+    "name": "Tommy’s Margarita",
+    "level": 1,
+    "category": "Agave",
+    "glassware": "Rocks",
+    "method": "Shaken",
+    "ingredients": [
+      "50ml Tequila",
+      "25ml Lime Juice",
+      "15ml Agave Syrup"
+    ],
+    "proTip": "Use good quality 100% agave tequila — you’ll taste the difference.",
+    "didYouKnow": "Created in the 1990s by Julio Bermejo at Tommy’s Mexican Restaurant in San Francisco."
+  },
+  {
+    "name": "Mezcalita",
+    "level": 2,
+    "category": "Agave",
+    "glassware": "Rocks",
+    "method": "Shaken",
+    "ingredients": [
+      "50ml Mezcal",
+      "25ml Lime Juice",
+      "15ml Agave Syrup",
+      "Optional: Tajín rim"
+    ],
+    "proTip": "Rim half the glass — let guests choose their heat level.",
+    "didYouKnow": "The smoky cousin of Tommy’s Margarita, perfect for spice pairings."
+  },
+  {
+    "name": "Cherry Mezcalita",
+    "level": 3,
+    "category": "Agave",
+    "glassware": "Rocks",
+    "method": "Shaken",
+    "ingredients": [
+      "50ml Mezcal",
+      "20ml Lime Juice",
+      "20ml Cherry Syrup",
+      "5ml Agave Syrup"
+    ],
+    "proTip": "Balance is everything — cherry can dominate easily.",
+    "didYouKnow": "A house spin on the Mezcalita, bringing a fruity edge to the smoke."
+  },
+  {
+    "name": "Paloma",
+    "level": 1,
+    "category": "Agave",
+    "glassware": "Highball",
+    "method": "Built",
+    "ingredients": [
+      "50ml Tequila or Mezcal",
+      "10ml Lime Juice",
+      "Pinch of Salt",
+      "Top with Grapefruit Soda"
+    ],
+    "proTip": "Salt + soda is essential — don’t skip either.",
+    "didYouKnow": "The Paloma is the most popular tequila drink in Mexico, not the Margarita."
+  },
+  {
+    "name": "Chicago Fizz",
+    "level": 3,
+    "category": "Fizz",
+    "glassware": "Highball",
+    "method": "Shaken",
+    "ingredients": [
+      "45ml Dark Rum",
+      "15ml Ruby Port",
+      "20ml Lemon Juice",
+      "10ml Sugar Syrup",
+      "1 Egg White",
+      "Top with Soda"
+    ],
+    "proTip": "The port adds complexity — don’t sub with sweet red wine.",
+    "didYouKnow": "Originated in the early 1900s and makes for an unexpectedly elegant highball."
+  },
+  {
+    "name": "Classic Daiquiri",
+    "level": 1,
+    "category": "Rum",
+    "glassware": "Coupe",
+    "method": "Shaken",
+    "ingredients": [
+      "50ml White Rum",
+      "25ml Lime Juice",
+      "15ml Sugar Syrup"
+    ],
+    "proTip": "Serve ice cold in a well-chilled coupe. No fruit, no garnish, no nonsense.",
+    "didYouKnow": "Invented in Cuba — Hemingway loved his *very* dry."
+  },
+  {
+    "name": "Mai Tai",
+    "level": 2,
+    "category": "Rum",
+    "glassware": "Rocks",
+    "method": "Shaken",
+    "ingredients": [
+      "40ml Aged Jamaican Rum",
+      "20ml Lime Juice",
+      "15ml Orange Curaçao",
+      "10ml Orgeat Syrup"
+    ],
+    "proTip": "Use crushed ice and a mint sprig — it’s not just about taste, it’s theatre.",
+    "didYouKnow": "Mai Tai means ‘Out of this World’ in Tahitian."
+  },
+  {
+    "name": "Yuzu Negroni",
+    "level": 2,
+    "category": "Twists",
+    "glassware": "Rocks",
+    "method": "Stirred",
+    "ingredients": [
+      "25ml Gin",
+      "25ml Yuzu Liqueur",
+      "25ml Campari"
+    ],
+    "proTip": "Chill everything down to avoid bitterness overpowering citrus.",
+    "didYouKnow": "The yuzu twist brings Japanese acidity to a deep Italian bitter."
+  },
+  {
+    "name": "Reverse Adonis",
+    "level": 3,
+    "category": "Low ABV",
+    "glassware": "Nick & Nora",
+    "method": "Stirred",
+    "ingredients": [
+      "40ml Dry Sherry",
+      "20ml Sweet Vermouth",
+      "2 dashes Orange Bitters"
+    ],
+    "proTip": "Use quality sherry — this drink is all about subtlety.",
+    "didYouKnow": "A twist on the 1880s Adonis, named after a Broadway show."
+  },
+  {
+    "name": "Spicy Dead Lady",
+    "level": 3,
+    "category": "Originals",
+    "glassware": "Coupe",
+    "method": "Shaken",
+    "ingredients": [
+      "45ml Mezcal",
+      "20ml Lime Juice",
+      "15ml Triple Sec",
+      "10ml Ginger Syrup",
+      "2 dashes Hellfire Bitters"
+    ],
+    "proTip": "Don’t overshake — you want sting, not foam.",
+    "didYouKnow": "The Dead Lady is our own ghostly riff on a spicy Margarita."
+  }
+]
+

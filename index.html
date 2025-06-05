@@ -1,159 +1,100 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>OBL Cocktail Specs</title>
+  <title>OBL Cocktail Specs Portal</title>
   <style>
-    body { font-family: sans-serif; margin: 0; padding: 2rem; background: #f9f9f9; }
-    .container { max-width: 1000px; margin: auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    h1 { text-align: center; }
-    .controls { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
-    select, input { padding: 0.5rem; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
-    .card { padding: 1rem; border: 1px solid #ddd; border-radius: 8px; background: #fff; }
-    .card h3 { margin-top: 0; }
-    .locked { color: #999; font-style: italic; }
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      background-color: #111;
+      color: #f5f5f5;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 2rem;
+      color: #ffa500;
+    }
+    .cocktail-card {
+      background: #1e1e1e;
+      border: 1px solid #333;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+    }
+    .cocktail-card h2 {
+      color: #00ffff;
+      margin-top: 0;
+    }
+    .cocktail-card ul {
+      padding-left: 1.2rem;
+    }
+    .category-label {
+      font-size: 0.8rem;
+      background: #444;
+      padding: 0.3rem 0.5rem;
+      border-radius: 5px;
+      margin-right: 0.5rem;
+      display: inline-block;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🍸 OBL Cocktail Spec Reference</h1>
-    <div class="controls">
-      <input id="username" placeholder="Enter role (admin / mentor / bartender...)" />
-      <button onclick="setUser()">Set Role</button>
-      <select id="categoryFilter" onchange="renderCards()">
-        <option value="">All Categories</option>
-        <option value="Classic">Classic</option>
-        <option value="House">House</option>
-      </select>
-    </div>
-    <div class="grid" id="specGrid"></div>
-  </div>
-
+  <h1>🍸 OBL Cocktail Specs Portal</h1>
+  <div id="cocktail-container">Loading cocktails...</div>
   <script>
-    const specs = {
-      "cocktails": [
-  {
-    "name": "Dry Martini",
-    "category": "Classic",
-    "glassware": "Martini",
-    "method": "Stirred",
-    "level": 3,
-    "proTip": "Chill your glass and stir for at least 30 seconds."
-  },
-  {
-    "name": "The Martinez",
-    "category": "Classic",
-    "glassware": "Nick & Nora",
-    "method": "Stirred",
-    "level": 3,
-    "proTip": "Old Tom gin gives this its signature softness."
-  },
-  {
-    "name": "Yuzu Negroni",
-    "category": "House",
-    "glassware": "Rocks",
-    "method": "Stirred",
-    "level": 3,
-    "proTip": "Yuzu cordial adds a vibrant citrus punch."
-  },
-  {
-    "name": "Classic Daiquiri",
-    "category": "Classic",
-    "glassware": "Coupe",
-    "method": "Shaken",
-    "level": 2,
-    "proTip": "Use fresh lime and cane sugar for best result."
-  },
-  {
-    "name": "Disco Sour",
-    "category": "House",
-    "glassware": "Coupette",
-    "method": "Shaken",
-    "level": 3,
-    "proTip": "Berry batch should always be kept cold."
-  },
-  {
-    "name": "Old Fashioned",
-    "category": "Classic",
-    "glassware": "Rocks",
-    "method": "Stirred",
-    "level": 2,
-    "proTip": "Use a large ice cube to prevent over-dilution."
-  },
-  {
-    "name": "Mezcal Old Fashioned",
-    "category": "House",
-    "glassware": "Rocks",
-    "method": "Stirred",
-    "level": 3,
-    "proTip": "Orange bitters and a flamed peel work magic here."
-  },
-  {
-    "name": "Negroni",
-    "category": "Classic",
-    "glassware": "Rocks",
-    "method": "Stirred",
-    "level": 2,
-    "proTip": "Equal parts for balance. Stir, don't shake."
-  },
-  {
-    "name": "Chicago Fizz",
-    "category": "Classic",
-    "glassware": "Fizz",
-    "method": "Shaken with egg white",
-    "level": 3,
-    "proTip": "Dry shake to emulsify, then add ice and shake again."
-  },
-  {
-    "name": "Privateer",
-    "category": "House",
-    "glassware": "Nick & Nora",
-    "method": "Stirred",
-    "level": 3,
-    "proTip": "A touch of saline balances the sweetness."
-  }
-]
-    };
+    async function loadSpecs() {
+      try {
+        const res = await fetch('specs.json');
+        const data = await res.json();
+        const container = document.getElementById('cocktail-container');
+        container.innerHTML = '';
 
-    let userLevel = 1;
+        data.forEach(drink => {
+          const card = document.createElement('div');
+          card.className = 'cocktail-card';
 
-    function setUser() {
-      const role = document.getElementById("username").value.toLowerCase();
-      if (role === "admin") userLevel = 4;
-      else if (role === "mentor") userLevel = 3;
-      else if (role === "bartender") userLevel = 2;
-      else userLevel = 1;
-      renderCards();
+          const title = document.createElement('h2');
+          title.textContent = drink.name;
+
+          const meta = document.createElement('p');
+          meta.innerHTML = `
+            <span class="category-label">Level ${drink.level}</span>
+            <span class="category-label">${drink.category}</span>
+            <span class="category-label">${drink.glassware}</span>
+            <span class="category-label">${drink.method}</span>
+          `;
+
+          const ing = document.createElement('ul');
+          drink.ingredients.forEach(ingr => {
+            const li = document.createElement('li');
+            li.textContent = ingr;
+            ing.appendChild(li);
+          });
+
+          const tip = document.createElement('p');
+          tip.innerHTML = `<strong>Pro Tip:</strong> ${drink.proTip}`;
+
+          const fact = document.createElement('p');
+          fact.innerHTML = `<strong>Did You Know?</strong> ${drink.didYouKnow}`;
+
+          card.appendChild(title);
+          card.appendChild(meta);
+          card.appendChild(ing);
+          card.appendChild(tip);
+          card.appendChild(fact);
+
+          container.appendChild(card);
+        });
+      } catch (e) {
+        document.getElementById('cocktail-container').textContent = 'Failed to load specs.';
+        console.error('Error loading specs:', e);
+      }
     }
 
-    function renderCards() {
-      const grid = document.getElementById("specGrid");
-      const filter = document.getElementById("categoryFilter").value;
-      grid.innerHTML = "";
-
-      specs.cocktails.forEach(spec => {
-        if (filter && spec.category !== filter) return;
-
-        const locked = spec.level > userLevel;
-        const card = document.createElement("div");
-        card.className = "card";
-
-        card.innerHTML = locked
-          ? `<h3>${spec.name}</h3><p class="locked">Locked (Level ${spec.level}+)</p>`
-          : `<h3>${spec.name}</h3>
-             <p><strong>Category:</strong> ${spec.category}</p>
-             <p><strong>Glassware:</strong> ${spec.glassware}</p>
-             <p><strong>Method:</strong> ${spec.method}</p>
-             <p><strong>Pro Tip:</strong> ${spec.proTip}</p>`;
-
-        grid.appendChild(card);
-      });
-    }
-
-    renderCards();
+    loadSpecs();
   </script>
 </body>
 </html>
+
