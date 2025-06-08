@@ -1,1 +1,1 @@
-// JavaScript for milestone logic and card interactivity
+document.getElementById('cocktail-container').innerText = 'Cocktail cards will render here...';
