@@ -1,1 +1,1 @@
-document.getElementById('cocktail-container').innerText = 'Cocktail cards will render here...';
+console.log("Portal loaded successfully.");
