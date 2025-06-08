@@ -8,16 +8,16 @@
 </head>
 <body>
   <h1>🍸 Welcome to the OBL Cocktail Specs Portal</h1>
-  <p>This is a working version. If you see this, GitHub Pages is rendering correctly.</p>
-  <div class="cocktail-card">
-    <h2>Whiskey Sour</h2>
-    <p>50ml Bourbon, 25ml Lemon Juice, 20ml Sugar Syrup, Egg White (optional)</p>
-    <p><strong>Method:</strong> Dry shake, then shake with ice. Strain into rocks glass.</p>
-  </div>
-  <div class="cocktail-card">
-    <h2>Wet Martini</h2>
-    <p>60ml Gin, 15ml Dry Vermouth</p>
-    <p><strong>Method:</strong> Stirred over ice, strain into a chilled martini glass.</p>
+  <p>This is the full version. Click a cocktail to view more.</p>
+  <div class="card" onclick="showModal('Dry Martini')">Dry Martini</div>
+  <div class="card" onclick="showModal('Whiskey Sour')">Whiskey Sour</div>
+  <div class="card" onclick="showModal('Negroni')">Negroni</div>
+  <div id="modal" class="modal hidden">
+    <div class="modal-content" id="modal-content">
+      <span onclick="closeModal()" class="close">&times;</span>
+      <h2>Cocktail</h2>
+      <p>Details go here...</p>
+    </div>
   </div>
   <script src="scripts.js"></script>
 </body>
