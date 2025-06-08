@@ -1,24 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>OBL Cocktail Specs Portal</title>
-  <link rel="stylesheet" href="style.css">
+    <title>OBL Bartender Training</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <h1>🍸 Welcome to the OBL Cocktail Specs Portal</h1>
-  <p>This is the full version. Click a cocktail to view more.</p>
-  <div class="card" onclick="showModal('Dry Martini')">Dry Martini</div>
-  <div class="card" onclick="showModal('Whiskey Sour')">Whiskey Sour</div>
-  <div class="card" onclick="showModal('Negroni')">Negroni</div>
-  <div id="modal" class="modal hidden">
-    <div class="modal-content" id="modal-content">
-      <span onclick="closeModal()" class="close">&times;</span>
-      <h2>Cocktail</h2>
-      <p>Details go here...</p>
-    </div>
-  </div>
-  <script src="scripts.js"></script>
+    <h1>Welcome to the OBL Bartender Training Portal</h1>
+    <div id="cocktail-list"></div>
+    <script src="js/main.js"></script>
 </body>
 </html>
