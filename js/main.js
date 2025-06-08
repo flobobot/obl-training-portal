@@ -1,1 +1,0 @@
-document.getElementById('cocktail-list').innerText = 'Loading cocktails...';
