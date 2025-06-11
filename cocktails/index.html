@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OBL Cocktail Handbook</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f8f8f8; padding: 2rem; margin: 0; }
+    h1, h2 { text-align: center; }
+    .category-section { margin-bottom: 3rem; }
+    .cocktail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; padding-top: 1rem; }
+    .cocktail-card { background: #fff; border-radius: 12px; padding: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: 0.3s; text-align: left; }
+    .cocktail-card:hover { transform: scale(1.03); }
+    .cocktail-card h3 { margin: 0 0 0.5rem; }
+    .tag-bar { font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 6px; display: inline-block; margin-bottom: 0.5rem; }
+    .Classic { background-color: #cce0ff; color: #003366; }
+    .House\ Riff { background-color: #fff7cc; color: #665500; }
+    .Non-Alcoholic { background-color: #ccffcc; color: #006600; }
+    a.card-link { text-decoration: none; color: inherit; display: block; }
+  </style>
+</head>
+<body>
+  <h1>🍸 OBL Cocktail Handbook</h1>
+
+  <div id="classic" class="category-section">
+    <h2>🟦 Classic Cocktails</h2>
+    <div class="cocktail-grid" id="classicGrid"></div>
+  </div>
+
+  <div id="riff" class="category-section">
+    <h2>🟨 House Riffs</h2>
+    <div class="cocktail-grid" id="riffGrid"></div>
+  </div>
+
+  <div id="na" class="category-section">
+    <h2>🟩 Non-Alcoholic</h2>
+    <div class="cocktail-grid" id="naGrid"></div>
+  </div>
+
+  <script>
+    function slugify(text) {
+      return text.toString().toLowerCase().replace(/'/g, '').replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    }
+
+    fetch("../data/cocktail_data_backup.json")
+      .then(res => res.json())
+      .then(data => {
+        const classic = document.getElementById("classicGrid");
+        const riff = document.getElementById("riffGrid");
+        const na = document.getElementById("naGrid");
+
+        data.forEach(cocktail => {
+          const tag = cocktail.tag || "Classic";
+          const tagClass = tag.replace(/ /g, "\\ ");
+          const slug = slugify(cocktail.title || "untitled");
+          const div = document.createElement("div");
+          div.className = "cocktail-card";
+          div.innerHTML = `
+            <a class="card-link" href="${slug}.html">
+              <div class="tag-bar ${tagClass}">${tag}</div>
+              <h3>${cocktail.title}</h3>
+            </a>
+          `;
+          if (tag === "House Riff") {
+            riff.appendChild(div);
+          } else if (tag === "Non-Alcoholic") {
+            na.appendChild(div);
+          } else {
+            classic.appendChild(div);
+          }
+        });
+      });
+  </script>
+</body>
+</html>
