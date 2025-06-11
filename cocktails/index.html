@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OBL Cocktail Handbook</title>
+  <link rel="stylesheet" href="/style.css" />
+  <script defer src="/scripts/cocktailIndex.js"></script>
+</head>
+<body class="bg-zinc-100 text-zinc-900">
+  <div class="max-w-6xl mx-auto p-4">
+    <h1 class="text-4xl font-bold mb-6 text-center">OBL Cocktail Handbook</h1>
+    <div id="cocktail-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
+    <footer class="mt-12 text-center text-sm text-zinc-500">
+      <a href="/index.html" class="underline hover:text-zinc-700">← Return to Main Portal</a>
+    </footer>
+  </div>
+
+  <script>
+    fetch('/data/cocktail_data_backup.json')
+      .then(response => response.json())
+      .then(data => {
+        const grid = document.getElementById('cocktail-grid');
+        data.forEach(cocktail => {
+          const card = document.createElement('a');
+          card.href = `/cocktails/${cocktail.filename.replace('.md', '.html')}`;
+          card.className = 'block bg-white rounded-2xl shadow-md p-4 hover:shadow-lg transition';
+          card.innerHTML = `
+            <h2 class="text-xl font-semibold mb-2">${cocktail.title}</h2>
+            <p class="text-sm text-zinc-500">Tag: <span class="italic">Coming soon</span></p>
+          `;
+          grid.appendChild(card);
+        });
+      })
+      .catch(err => {
+        document.getElementById('cocktail-grid').innerHTML = '<p class="text-red-600">Failed to load cocktail data.</p>';
+        console.error('Error loading JSON:', err);
+      });
+  </script>
+</body>
+</html>
