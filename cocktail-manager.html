@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cocktail Manager</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .tag {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .classic { background-color: #007bff; color: white; }
+    .house { background-color: #ffc107; color: black; }
+    .nonalcoholic { background-color: #28a745; color: white; }
+    .section-title { font-size: 1.2rem; margin-top: 20px; font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Cocktail Card Manager</h1>
+  <input type="text" id="searchInput" placeholder="Search cocktails..." onkeyup="filterCocktails()">
+  <button onclick="addCocktailCard()">Add Cocktail Card</button>
+  <div id="cocktailList"></div>
+
+  <div id="editModal" style="display:none;">
+    <h2>Edit Cocktail</h2>
+    <label>Title: <input type="text" id="editTitle"></label><br>
+    <label>Ingredients: <textarea id="editIngredients"></textarea></label><br>
+    <label>Method: <textarea id="editMethod"></textarea></label><br>
+    <label>Glassware: <input type="text" id="editGlassware"></label><br>
+    <label>Tag: <select id="editTag">
+      <option value="classic">Classic</option>
+      <option value="house">House Riff</option>
+      <option value="nonalcoholic">Non-Alcoholic</option>
+    </select></label><br>
+    <label>Pro Tip: <textarea id="editProTip"></textarea></label><br>
+    <label>Did You Know: <textarea id="editDidYouKnow"></textarea></label><br>
+    <button onclick="saveCocktail()">Save</button>
+    <button onclick="closeModal()">Cancel</button>
+  </div>
+
+  <script>
+    let cocktails = [];
+    let currentIndex = null;
+
+    async function loadCocktails() {
+      const response = await fetch('data/cocktail_data_backup.json');
+      cocktails = await response.json();
+      displayCocktails();
+    }
+
+    function getTagClass(tag) {
+      switch (tag.toLowerCase()) {
+        case 'classic': return 'tag classic';
+        case 'house riff':
+        case 'house': return 'tag house';
+        case 'non-alcoholic':
+        case 'nonalcoholic': return 'tag nonalcoholic';
+        default: return 'tag';
+      }
+    }
+
+    function displayCocktails() {
+      const list = document.getElementById('cocktailList');
+      list.innerHTML = '';
+
+      const grouped = {
+        classic: [],
+        house: [],
+        nonalcoholic: []
+      };
+
+      cocktails.forEach((c, i) => {
+        const tag = (c.tag || '').toLowerCase();
+        if (tag.includes('house')) grouped.house.push([c, i]);
+        else if (tag.includes('non')) grouped.nonalcoholic.push([c, i]);
+        else grouped.classic.push([c, i]);
+      });
+
+      const renderSection = (title, entries) => {
+        if (entries.length === 0) return;
+        const header = document.createElement('div');
+        header.className = 'section-title';
+        header.textContent = title;
+        list.appendChild(header);
+        entries.forEach(([cocktail, index]) => {
+          const div = document.createElement('div');
+          div.className = 'cocktail-card';
+          const tagLabel = `<div class="${getTagClass(cocktail.tag)}">${cocktail.tag}</div>`;
+          div.innerHTML = `
+            ${tagLabel}
+            <h3>${cocktail.title}</h3>
+            <p><strong>Ingredients:</strong> ${cocktail.ingredients}</p>
+            <p><strong>Method:</strong> ${cocktail.method}</p>
+            <p><strong>Glassware:</strong> ${cocktail.glassware}</p>
+            ${cocktail.pro_tip ? `<p><strong>Pro Tip:</strong> ${cocktail.pro_tip}</p>` : ''}
+            ${cocktail.did_you_know ? `<p><strong>Did You Know?:</strong> ${cocktail.did_you_know}</p>` : ''}
+            <button onclick="editCocktail(${index})">Edit</button>
+            <button onclick="confirmDelete(${index})">Delete</button>
+          `;
+          list.appendChild(div);
+        });
+      };
+
+      renderSection('Classic Cocktails', grouped.classic);
+      renderSection('House Riffs', grouped.house);
+      renderSection('Non-Alcoholic', grouped.nonalcoholic);
+    }
+
+    function editCocktail(index) {
+      currentIndex = index;
+      const c = cocktails[index];
+      document.getElementById('editTitle').value = c.title;
+      document.getElementById('editIngredients').value = c.ingredients;
+      document.getElementById('editMethod').value = c.method;
+      document.getElementById('editGlassware').value = c.glassware;
+      document.getElementById('editTag').value = c.tag;
+      document.getElementById('editProTip').value = c.pro_tip || '';
+      document.getElementById('editDidYouKnow').value = c.did_you_know || '';
+      document.getElementById('editModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('editModal').style.display = 'none';
+    }
+
+    function saveCocktail() {
+      const c = cocktails[currentIndex];
+      c.title = document.getElementById('editTitle').value;
+      c.ingredients = document.getElementById('editIngredients').value;
+      c.method = document.getElementById('editMethod').value;
+      c.glassware = document.getElementById('editGlassware').value;
+      c.tag = document.getElementById('editTag').value;
+      c.pro_tip = document.getElementById('editProTip').value;
+      c.did_you_know = document.getElementById('editDidYouKnow').value;
+      closeModal();
+      displayCocktails();
+      downloadUpdatedJSON();
+    }
+
+    function confirmDelete(index) {
+      if (confirm("Are you sure you want to delete this cocktail?")) {
+        cocktails.splice(index, 1);
+        displayCocktails();
+        downloadUpdatedJSON();
+      }
+    }
+
+    function addCocktailCard() {
+      cocktails.unshift({
+        title: 'New Cocktail',
+        ingredients: '',
+        method: '',
+        glassware: '',
+        tag: 'classic',
+        pro_tip: '',
+        did_you_know: ''
+      });
+      displayCocktails();
+    }
+
+    function downloadUpdatedJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(cocktails, null, 2));
+      const dlAnchor = document.createElement('a');
+      dlAnchor.setAttribute("href", dataStr);
+      dlAnchor.setAttribute("download", "cocktail_data_backup.json");
+      document.body.appendChild(dlAnchor);
+      dlAnchor.click();
+      dlAnchor.remove();
+    }
+
+    function filterCocktails() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const list = document.getElementById('cocktailList');
+      list.innerHTML = '';
+      const results = cocktails.map((c, i) => [c, i]).filter(([c]) => c.title.toLowerCase().includes(query));
+      const grouped = {
+        classic: [],
+        house: [],
+        nonalcoholic: []
+      };
+      results.forEach(([c, i]) => {
+        const tag = (c.tag || '').toLowerCase();
+        if (tag.includes('house')) grouped.house.push([c, i]);
+        else if (tag.includes('non')) grouped.nonalcoholic.push([c, i]);
+        else grouped.classic.push([c, i]);
+      });
+      const renderSection = (title, entries) => {
+        if (entries.length === 0) return;
+        const header = document.createElement('div');
+        header.className = 'section-title';
+        header.textContent = title;
+        list.appendChild(header);
+        entries.forEach(([cocktail, index]) => {
+          const div = document.createElement('div');
+          div.className = 'cocktail-card';
+          const tagLabel = `<div class="${getTagClass(cocktail.tag)}">${cocktail.tag}</div>`;
+          div.innerHTML = `
+            ${tagLabel}
+            <h3>${cocktail.title}</h3>
+            <p><strong>Ingredients:</strong> ${cocktail.ingredients}</p>
+            <p><strong>Method:</strong> ${cocktail.method}</p>
+            <p><strong>Glassware:</strong> ${cocktail.glassware}</p>
+            ${cocktail.pro_tip ? `<p><strong>Pro Tip:</strong> ${cocktail.pro_tip}</p>` : ''}
+            ${cocktail.did_you_know ? `<p><strong>Did You Know?:</strong> ${cocktail.did_you_know}</p>` : ''}
+            <button onclick="editCocktail(${index})">Edit</button>
+            <button onclick="confirmDelete(${index})">Delete</button>
+          `;
+          list.appendChild(div);
+        });
+      };
+      renderSection('Classic Cocktails', grouped.classic);
+      renderSection('House Riffs', grouped.house);
+      renderSection('Non-Alcoholic', grouped.nonalcoholic);
+    }
+
+    window.onload = loadCocktails;
+  </script>
+</body>
+</html>
