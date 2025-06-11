@@ -1,9 +1,0 @@
-
-[build]
-publish = "obl-training-portal"
-command = ""
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
