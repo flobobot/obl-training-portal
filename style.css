@@ -4,41 +4,41 @@ body {
   background: #f9f9f9;
   color: #333;
   padding: 2rem;
+  text-align: center;
 }
 h1 {
-  text-align: center;
+  font-size: 2rem;
   margin-bottom: 2rem;
 }
-h2 {
-  margin-top: 2rem;
-  color: #444;
-}
-.cocktail-grid {
+.portal-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
 }
-.cocktail-card {
+.portal-card {
   background: white;
-  padding: 1rem;
+  padding: 2rem;
   border-radius: 1rem;
-  text-align: center;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  transition: background 0.2s;
+  transition: 0.2s;
+  font-size: 1.2rem;
 }
-.cocktail-card:hover {
-  background: #f0f0f0;
-}
-a {
+.portal-card a {
   text-decoration: none;
   color: #222;
   font-weight: bold;
 }
-.tag {
-  display: inline-block;
-  padding: 0.4rem 0.8rem;
-  border-radius: 8px;
-  font-weight: bold;
-  margin-bottom: 1rem;
+.portal-card:hover {
+  background: #f0f0f0;
+}
+.coming-soon {
+  color: #aaa;
+}
+.coming-soon-label {
+  display: block;
+  margin-top: 0.5rem;
   font-size: 0.9rem;
+  color: #999;
 }
