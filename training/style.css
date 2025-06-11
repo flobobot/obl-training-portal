@@ -4,41 +4,49 @@ body {
   background: #f9f9f9;
   color: #333;
   padding: 2rem;
-  max-width: 720px;
-  margin: auto;
+  text-align: center;
 }
 h1 {
-  text-align: center;
-  margin-bottom: 1rem;
-}
-h2 {
-  margin-top: 2.5rem;
-  color: #333;
-}
-.tag {
-  display: inline-block;
-  background: #e5f0ff;
-  color: #004085;
-  padding: 0.4rem 0.8rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-.goal-block {
-  background: #e6f4ea;
-  border-left: 5px solid #28a745;
-  padding: 1rem;
-  font-size: 1.05rem;
+  font-size: 2rem;
   margin-bottom: 2rem;
 }
-.checklist {
-  list-style-type: none;
-  padding-left: 0;
+.portal-grid, .cocktail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
 }
-.checklist li {
-  margin-bottom: 0.6rem;
+.portal-card, .cocktail-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: 0.2s;
+  font-size: 1.2rem;
 }
-input[type="checkbox"] {
-  margin-right: 0.8rem;
+.portal-card a, .cocktail-card a {
+  text-decoration: none;
+  color: #222;
+  font-weight: bold;
+}
+.portal-card:hover, .cocktail-card:hover {
+  background: #f0f0f0;
+}
+.coming-soon {
+  color: #aaa;
+}
+.coming-soon-label {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #999;
+}
+footer {
+  margin-top: 3rem;
+  font-size: 0.95rem;
+}
+footer a {
+  color: #0077cc;
+  text-decoration: none;
 }
