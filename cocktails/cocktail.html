@@ -24,125 +24,48 @@
   </footer>
 
   <script>
-  fetch("/data/cocktail_data_backup.json")
-    .then(res => res.json())
-    .then(data => {
-      const container = document.getElementById("cocktailContainer");
-      const searchInput = document.getElementById("searchInput");
+    async function loadCocktail() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const rawSlug = urlParams.get("slug");
+      const decodedSlug = decodeURIComponent(rawSlug || "").toLowerCase();
 
-      function renderCocktails(filtered = data) {
-        container.innerHTML = "";
+      try {
+        const res = await fetch("../data/cocktail_data_backup.json");
+        const data = await res.json();
 
-        filtered.forEach(cocktail => {
-          const card = document.createElement("div");
-          card.className = "cocktail-card";
+        // Match by simplified title (converted to slug form)
+        const slugify = title => title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-');
+        const cocktail = data.find(c => slugify(c.title) === decodedSlug);
 
-          const name = document.createElement("h3");
-          name.textContent = cocktail.title || "Untitled";
-          card.appendChild(name);
-
-          const tag = document.createElement("p");
-          tag.className = "cocktail-tag";
-          tag.textContent = cocktail.tag || "Uncategorised";
-          card.appendChild(tag);
-
-          const edit = document.createElement("button");
-          edit.textContent = "Edit";
-          edit.onclick = () => openEditor(cocktail);
-          card.appendChild(edit);
-
-          const del = document.createElement("button");
-          del.textContent = "Delete";
-          del.onclick = () => confirmDelete(cocktail.title);
-          card.appendChild(del);
-
-          container.appendChild(card);
-        });
-      }
-
-      renderCocktails();
-
-      searchInput.addEventListener("input", e => {
-        const term = e.target.value.toLowerCase();
-        const filtered = data.filter(c =>
-          c.title?.toLowerCase().includes(term)
-        );
-        renderCocktails(filtered);
-      });
-
-      window.openEditor = cocktail => {
-        document.getElementById("modal").style.display = "block";
-        document.getElementById("modalTitle").textContent = "Edit Cocktail";
-        document.getElementById("cocktailTitle").value = cocktail.title || "";
-        document.getElementById("cocktailIngredients").value = cocktail.ingredients || "";
-        document.getElementById("cocktailMethod").value = cocktail.method || "";
-        document.getElementById("cocktailGlassware").value = cocktail.glassware || "";
-        document.getElementById("cocktailGarnish").value = cocktail.garnish || "";
-        document.getElementById("cocktailProTip").value = cocktail.pro_tip || "";
-        document.getElementById("cocktailDidYouKnow").value = cocktail.did_you_know || "";
-        document.getElementById("cocktailTag").value = cocktail.tag || "Uncategorised";
-        
-        window.currentSlug = cocktail.slug || cocktail.title?.toLowerCase().replace(/ /g, "-");
-      };
-
-      window.saveCocktail = () => {
-        const updated = {
-          title: document.getElementById("cocktailTitle").value,
-          ingredients: document.getElementById("cocktailIngredients").value,
-          method: document.getElementById("cocktailMethod").value,
-          glassware: document.getElementById("cocktailGlassware").value,
-          garnish: document.getElementById("cocktailGarnish").value,
-          pro_tip: document.getElementById("cocktailProTip").value,
-          did_you_know: document.getElementById("cocktailDidYouKnow").value,
-          tag: document.getElementById("cocktailTag").value,
-          slug: window.currentSlug || document.getElementById("cocktailTitle").value.toLowerCase().replace(/ /g, "-")
-        };
-
-        const index = data.findIndex(c => c.slug === updated.slug);
-        if (index >= 0) {
-          data[index] = updated;
-        } else {
-          data.push(updated);
+        if (!cocktail) {
+          document.body.innerHTML = "<p style='text-align: center;'>Cocktail not found.</p>";
+          return;
         }
 
-        renderCocktails();
-        closeEditor();
-      };
+        document.getElementById("title").textContent = cocktail.title;
 
-      window.downloadJSON = () => {
-        const blob = new Blob([JSON.stringify(data, null, 2)], {
-          type: "application/json"
-        });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "cocktail_data_backup.json";
-        a.click();
-      };
+        const sections = [
+          { id: "ingredients", label: "Ingredients", content: Array.isArray(cocktail.ingredients) ? cocktail.ingredients.join("<br>") : cocktail.ingredients },
+          { id: "method", label: "Method", content: cocktail.method },
+          { id: "glassware", label: "Glassware", content: cocktail.glassware },
+          { id: "garnish", label: "Garnish", content: cocktail.garnish },
+          { id: "pro_tip", label: "Pro Tip", content: cocktail.pro_tip },
+          { id: "did_you_know", label: "Did You Know", content: cocktail.did_you_know }
+        ];
 
-      window.confirmDelete = title => {
-        if (confirm(`Are you sure you want to delete "${title}"?`)) {
-          const index = data.findIndex(c => c.title === title);
-          if (index >= 0) {
-            data.splice(index, 1);
-            renderCocktails();
+        sections.forEach(({ id, label, content }) => {
+          if (content) {
+            const container = document.getElementById(id);
+            container.innerHTML = `<h2>${label}</h2><p>${content}</p>`;
           }
-        }
-      };
+        });
 
-      window.closeEditor = () => {
-        document.getElementById("modal").style.display = "none";
-        document.getElementById("cocktailTitle").value = "";
-        document.getElementById("cocktailIngredients").value = "";
-        document.getElementById("cocktailMethod").value = "";
-        document.getElementById("cocktailGlassware").value = "";
-        document.getElementById("cocktailGarnish").value = "";
-        document.getElementById("cocktailProTip").value = "";
-        document.getElementById("cocktailDidYouKnow").value = "";
-        document.getElementById("cocktailTag").value = "Uncategorised";
-        window.currentSlug = null;
-      };
-    });
-</script>
+      } catch (error) {
+        document.body.innerHTML = "<p style='text-align: center;'>Failed to load cocktail data.</p>";
+      }
+    }
+
+    window.onload = loadCocktail;
+  </script>
 </body>
 </html>
