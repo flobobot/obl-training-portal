@@ -4,13 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cocktail Card</title>
-  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../style.css" />
 </head>
 <body class="cocktail-card">
-
   <div class="card">
     <h1 id="title">Loading...</h1>
-
     <div id="ingredients" class="card-section"></div>
     <div id="method" class="card-section"></div>
     <div id="glassware" class="card-section"></div>
@@ -20,23 +18,29 @@
   </div>
 
   <footer class="footer-nav">
-    <a href="../index.html">← Back to Main Page</a>
+    <a href="../cocktails/index.html">← Back to Cocktails Index</a>
   </footer>
 
   <script>
+    function slugify(text) {
+      return text
+        .toString()
+        .toLowerCase()
+        .replace(/[’'"]/g, '')       // remove apostrophes and quotes
+        .replace(/[^\w\s-]/g, '')    // remove non-word characters
+        .trim()
+        .replace(/\s+/g, '-')        // replace spaces with -
+    }
+
     async function loadCocktail() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const rawSlug = urlParams.get("slug");
-      const decodedSlug = decodeURIComponent(rawSlug || "").toLowerCase();
+      const params = new URLSearchParams(window.location.search);
+      const slug = decodeURIComponent(params.get("slug") || "").toLowerCase();
 
       try {
-        const res = await fetch("../data/cocktail_data_backup.json");
-        const data = await res.json();
+        const response = await fetch("../data/cocktail_data_backup.json");
+        const cocktails = await response.json();
 
-        // Match by simplified title (converted to slug form)
-        const slugify = title => title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-');
-        const cocktail = data.find(c => slugify(c.title) === decodedSlug);
-
+        const cocktail = cocktails.find(c => slugify(c.title) === slug);
         if (!cocktail) {
           document.body.innerHTML = "<p style='text-align: center;'>Cocktail not found.</p>";
           return;
@@ -50,17 +54,17 @@
           { id: "glassware", label: "Glassware", content: cocktail.glassware },
           { id: "garnish", label: "Garnish", content: cocktail.garnish },
           { id: "pro_tip", label: "Pro Tip", content: cocktail.pro_tip },
-          { id: "did_you_know", label: "Did You Know", content: cocktail.did_you_know }
+          { id: "did_you_know", label: "Did You Know?", content: cocktail.did_you_know }
         ];
 
         sections.forEach(({ id, label, content }) => {
           if (content) {
-            const container = document.getElementById(id);
-            container.innerHTML = `<h2>${label}</h2><p>${content}</p>`;
+            const el = document.getElementById(id);
+            el.innerHTML = `<h2>${label}</h2><p>${content}</p>`;
           }
         });
 
-      } catch (error) {
+      } catch (err) {
         document.body.innerHTML = "<p style='text-align: center;'>Failed to load cocktail data.</p>";
       }
     }
