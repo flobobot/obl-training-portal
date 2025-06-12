@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cocktail Card Manager v4</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    body { font-family: sans-serif; padding: 2rem; background: #fefefe; }
+    h1 { text-align: center; font-size: 2rem; margin-bottom: 1rem; }
+    .top-bar { text-align: center; margin-bottom: 1rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+    .card { border: 1px solid #ddd; border-radius: 10px; padding: 1rem; background: #fff; }
+    .card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+    .card p { font-size: 0.8rem; color: #666; margin-bottom: 0.5rem; }
+    .card button { margin-right: 0.5rem; }
+    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+             background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
+    .modal-inner { background: #fff; padding: 2rem; border-radius: 12px; width: 90%; max-width: 600px; }
+    .modal-inner h2 { margin-top: 0; }
+    .modal-inner textarea, .modal-inner input, .modal-inner select {
+      width: 100%; margin-bottom: 1rem; padding: 0.5rem; border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Cocktail Card Manager v4</h1>
+  <div class="top-bar">
+    <input type="text" id="search" placeholder="Search cocktails..." />
+    <button onclick="openEditor()">+ Add New Cocktail</button>
+  </div>
+  <div id="cocktail-list" class="grid"></div>
+
+  <div id="editor-modal" class="modal" style="display:none;">
+    <div class="modal-inner">
+      <h2 id="edit-title">Edit Cocktail</h2>
+      <input id="edit-name" placeholder="Cocktail Name" />
+      <textarea id="edit-ingredients" placeholder="Ingredients (one per line)"></textarea>
+      <textarea id="edit-method" placeholder="Method"></textarea>
+      <input id="edit-glassware" placeholder="Glassware" />
+      <textarea id="edit-garnish" placeholder="Garnish"></textarea>
+      <textarea id="edit-protip" placeholder="Pro Tip (optional)"></textarea>
+      <textarea id="edit-fact" placeholder="Did You Know? (optional)"></textarea>
+      <select id="edit-tag">
+        <option value="Classic">Classic</option>
+        <option value="House Riff">House Riff</option>
+        <option value="Non-Alcoholic">Non-Alcoholic</option>
+      </select>
+      <div>
+        <button onclick="saveCard()">Save</button>
+        <button onclick="downloadJSON()">Download JSON</button>
+        <button onclick="closeEditor()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let cocktails = [];
+    let currentIndex = -1;
+
+    fetch('/data/cocktail_data_backup.json')
+      .then(res => res.json())
+      .then(data => {
+        cocktails = data;
+        renderList();
+      });
+
+    function renderList() {
+      const list = document.getElementById('cocktail-list');
+      const search = document.getElementById('search').value.toLowerCase();
+      list.innerHTML = '';
+      cocktails.forEach((cocktail, i) => {
+        if (!cocktail.title.toLowerCase().includes(search)) return;
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+          <h3>${cocktail.title}</h3>
+          <p>${cocktail.tag || 'Classic'}</p>
+          <button onclick="editCard(${i})">Edit</button>
+          <button onclick="deleteCard(${i})">Delete</button>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function openEditor() {
+      currentIndex = -1;
+      document.getElementById('edit-title').textContent = 'Add Cocktail';
+      document.getElementById('edit-name').value = '';
+      document.getElementById('edit-ingredients').value = '';
+      document.getElementById('edit-method').value = '';
+      document.getElementById('edit-glassware').value = '';
+      document.getElementById('edit-garnish').value = '';
+      document.getElementById('edit-protip').value = '';
+      document.getElementById('edit-fact').value = '';
+      document.getElementById('edit-tag').value = 'Classic';
+      document.getElementById('editor-modal').style.display = 'flex';
+    }
+
+    function editCard(i) {
+      currentIndex = i;
+      const c = cocktails[i];
+      document.getElementById('edit-title').textContent = 'Edit Cocktail';
+      document.getElementById('edit-name').value = c.title;
+      document.getElementById('edit-ingredients').value = c.ingredients.join('\n');
+      document.getElementById('edit-method').value = c.method;
+      document.getElementById('edit-glassware').value = c.glassware;
+      document.getElementById('edit-garnish').value = c.garnish;
+      document.getElementById('edit-protip').value = c.protip || '';
+      document.getElementById('edit-fact').value = c.fact || '';
+      document.getElementById('edit-tag').value = c.tag || 'Classic';
+      document.getElementById('editor-modal').style.display = 'flex';
+    }
+
+    function saveCard() {
+      const newCard = {
+        title: document.getElementById('edit-name').value,
+        ingredients: document.getElementById('edit-ingredients').value.split('\n'),
+        method: document.getElementById('edit-method').value,
+        glassware: document.getElementById('edit-glassware').value,
+        garnish: document.getElementById('edit-garnish').value,
+        protip: document.getElementById('edit-protip').value,
+        fact: document.getElementById('edit-fact').value,
+        tag: document.getElementById('edit-tag').value,
+        filename: document.getElementById('edit-name').value.toLowerCase().replace(/\s+/g, '-') + '.html'
+      };
+      if (currentIndex >= 0) {
+        cocktails[currentIndex] = newCard;
+      } else {
+        cocktails.push(newCard);
+      }
+      renderList();
+      closeEditor();
+    }
+
+    function deleteCard(i) {
+      if (confirm("Are you sure you want to delete this cocktail?")) {
+        cocktails.splice(i, 1);
+        renderList();
+      }
+    }
+
+    function closeEditor() {
+      document.getElementById('editor-modal').style.display = 'none';
+    }
+
+    function downloadJSON() {
+      const blob = new Blob([JSON.stringify(cocktails, null, 2)], {type: 'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'cocktail_data_backup.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    document.getElementById('search').addEventListener('input', renderList);
+  </script>
+</body>
+</html>
