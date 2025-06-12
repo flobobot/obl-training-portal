@@ -2,74 +2,96 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cocktail Card</title>
+  <title>Cocktail Details</title>
   <link rel="stylesheet" href="../style.css" />
+  <style>
+    .tag {
+      font-weight: bold;
+      margin-bottom: 1rem;
+      padding: 0.3rem 0.6rem;
+      border-radius: 10px;
+      display: inline-block;
+    }
+    .Classic { color: #007bff; }
+    .House { color: #ff9900; }
+    .NonAlcoholic { color: #117a65; }
+    .Uncategorised { color: #666; }
+
+    .section-label {
+      font-weight: bold;
+      margin-top: 2rem;
+      font-size: 1.1rem;
+      color: #444;
+    }
+    .card {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      font-family: sans-serif;
+    }
+    .card h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .card p {
+      margin-bottom: 1rem;
+    }
+    .card pre {
+      background: #f4f4f4;
+      padding: 1rem;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  </style>
 </head>
-<body class="cocktail-card">
-  <div class="card">
-    <h1 id="title">Loading...</h1>
-    <div id="ingredients" class="card-section"></div>
-    <div id="method" class="card-section"></div>
-    <div id="glassware" class="card-section"></div>
-    <div id="garnish" class="card-section"></div>
-    <div id="pro_tip" class="card-section"></div>
-    <div id="did_you_know" class="card-section"></div>
+<body>
+  <div class="card" id="cocktail-card">
+    <h1>Loading…</h1>
+    <p><a href="/cocktails/">← Back to Main Page</a></p>
   </div>
 
-  <footer class="footer-nav">
-    <a href="../cocktails/index.html">← Back to Cocktails Index</a>
-  </footer>
-
   <script>
-    function slugify(text) {
-      return text
-        .toString()
-        .toLowerCase()
-        .replace(/[’'"]/g, '')       // remove apostrophes and quotes
-        .replace(/[^\w\s-]/g, '')    // remove non-word characters
-        .trim()
-        .replace(/\s+/g, '-')        // replace spaces with -
-    }
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get("slug");
 
-    async function loadCocktail() {
-      const params = new URLSearchParams(window.location.search);
-      const slug = decodeURIComponent(params.get("slug") || "").toLowerCase();
+    fetch("/data/cocktail_data_backup.json")
+      .then(res => res.json())
+      .then(data => {
+        const cocktail = data.find(c => {
+          return c.name && c.name.toLowerCase().replace(/\s+/g, "-") === slug;
+        });
 
-      try {
-        const response = await fetch("../data/cocktail_data_backup.json");
-        const cocktails = await response.json();
+        const container = document.getElementById("cocktail-card");
 
-        const cocktail = cocktails.find(c => slugify(c.title) === slug);
         if (!cocktail) {
-          document.body.innerHTML = "<p style='text-align: center;'>Cocktail not found.</p>";
+          container.innerHTML = `
+            <h1>Cocktail not found.</h1>
+            <p><a href="/cocktails/">← Back to Main Page</a></p>
+          `;
           return;
         }
 
-        document.getElementById("title").textContent = cocktail.title;
+        const tagClass = cocktail.tag?.replace(/\s+/g, '') || 'Uncategorised';
+        const tagLabel = cocktail.tag || 'Uncategorised';
 
-        const sections = [
-          { id: "ingredients", label: "Ingredients", content: Array.isArray(cocktail.ingredients) ? cocktail.ingredients.join("<br>") : cocktail.ingredients },
-          { id: "method", label: "Method", content: cocktail.method },
-          { id: "glassware", label: "Glassware", content: cocktail.glassware },
-          { id: "garnish", label: "Garnish", content: cocktail.garnish },
-          { id: "pro_tip", label: "Pro Tip", content: cocktail.pro_tip },
-          { id: "did_you_know", label: "Did You Know?", content: cocktail.did_you_know }
-        ];
-
-        sections.forEach(({ id, label, content }) => {
-          if (content) {
-            const el = document.getElementById(id);
-            el.innerHTML = `<h2>${label}</h2><p>${content}</p>`;
-          }
-        });
-
-      } catch (err) {
-        document.body.innerHTML = "<p style='text-align: center;'>Failed to load cocktail data.</p>";
-      }
-    }
-
-    window.onload = loadCocktail;
+        container.innerHTML = `
+          <span class="tag ${tagClass}">${tagLabel}</span>
+          <h1>${cocktail.name}</h1>
+          <p><strong>Ingredients:</strong></p>
+          <pre>${cocktail.ingredients || ''}</pre>
+          <p><strong>Method:</strong></p>
+          <pre>${cocktail.method || ''}</pre>
+          <p><strong>Glassware:</strong> ${cocktail.glassware || '–'}</p>
+          <p><strong>Garnish:</strong> ${cocktail.garnish || '–'}</p>
+          ${cocktail.proTip ? `<p class="section-label">Pro Tip</p><pre>${cocktail.proTip}</pre>` : ''}
+          ${cocktail.didYouKnow ? `<p class="section-label">Did You Know?</p><pre>${cocktail.didYouKnow}</pre>` : ''}
+          <p><a href="/cocktails/">← Back to Main Page</a></p>
+        `;
+      });
   </script>
 </body>
 </html>
