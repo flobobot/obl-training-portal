@@ -59,7 +59,7 @@
 
     async function fetchCocktails() {
       try {
-        const res = await fetch('/data/cocktail_data_backup.json');
+        const res = await fetch('data/cocktail_data_backup.json');
         cocktails = await res.json();
         renderCards();
       } catch (e) {
