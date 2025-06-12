@@ -3,58 +3,72 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cocktail Handbook</title>
-  <link rel="stylesheet" href="/style.css">
-</head>
-<body class="bg-zinc-100 text-zinc-900 p-4">
-  <h1 class="text-3xl font-bold mb-6 text-center">Cocktail Handbook</h1>
-  <div id="cocktail-groups" class="space-y-8"></div>
-
-  <script src="/data/cocktail_data_backup.json" type="application/json" id="cocktail-data"></script>
-  <script>
-    const data = JSON.parse(document.getElementById('cocktail-data').textContent);
-    const groupContainer = document.getElementById("cocktail-groups");
-
-    const tagColors = {
-      "Classic": "bg-blue-200 text-blue-900",
-      "House Riff": "bg-yellow-200 text-yellow-900",
-      "Non-Alcoholic": "bg-green-200 text-green-900"
-    };
-
-    const grouped = {
-      "Classic": [],
-      "House Riff": [],
-      "Non-Alcoholic": []
-    };
-
-    data.forEach(drink => {
-      grouped[drink.tag]?.push(drink);
-    });
-
-    for (const [tag, drinks] of Object.entries(grouped)) {
-      const section = document.createElement("section");
-      const header = document.createElement("h2");
-      header.className = "text-2xl font-semibold mb-4";
-      header.textContent = tag;
-      section.appendChild(header);
-
-      const grid = document.createElement("div");
-      grid.className = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4";
-
-      drinks.forEach(drink => {
-        const card = document.createElement("a");
-        card.href = `/cocktail.html?slug=${drink.slug}`;
-        card.className = `block p-4 rounded-xl shadow hover:shadow-md bg-white border-l-4 ${tagColors[tag] || 'border-gray-300'}`;
-        card.innerHTML = `
-          <div class="font-bold text-lg">${drink.title}</div>
-        `;
-        grid.appendChild(card);
-      });
-
-      section.appendChild(grid);
-      groupContainer.appendChild(section);
+  <title>OBL Cocktail Handbook</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    body { font-family: system-ui, sans-serif; padding: 2rem; text-align: center; }
+    h2 { margin-top: 3rem; }
+    .card-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1rem;
     }
+    .card {
+      background: white;
+      padding: 1rem 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+      text-decoration: none;
+      color: black;
+      font-weight: bold;
+    }
+    .card:hover {
+      transform: scale(1.05);
+      background: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <h1>OBL Cocktail Handbook</h1>
+  <div id="cocktail-container"></div>
+  <script>
+    fetch("../data/cocktail_data_backup.json")
+      .then(response => response.json())
+      .then(data => {
+        const container = document.getElementById("cocktail-container");
+        const groups = {};
+
+        data.forEach(drink => {
+          const tag = drink.tag || "Uncategorized";
+          if (!groups[tag]) groups[tag] = [];
+          groups[tag].push(drink);
+        });
+
+        Object.keys(groups).forEach(tag => {
+          const title = document.createElement("h2");
+          title.textContent = tag;
+          container.appendChild(title);
+
+          const grid = document.createElement("div");
+          grid.className = "card-grid";
+          groups[tag].forEach(drink => {
+            const a = document.createElement("a");
+            a.className = "card";
+            a.href = `cocktail.html?slug=${drink.slug}`;
+            a.textContent = drink.name;
+            grid.appendChild(a);
+          });
+
+          container.appendChild(grid);
+        });
+      })
+      .catch(error => {
+        document.getElementById("cocktail-container").innerHTML = "<p style='color:red;'>Failed to load cocktail data.</p>";
+        console.error("Error loading cocktail data:", error);
+      });
   </script>
 </body>
 </html>
