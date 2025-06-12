@@ -6,106 +6,115 @@
   <link rel="stylesheet" href="/style.css" />
   <style>
     body {
-      font-family: sans-serif;
-      background: #fafafa;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: #fdfdfd;
       color: #222;
-      text-align: center;
-      margin: 0;
       padding: 2rem;
+      text-align: center;
     }
     h1 {
       font-size: 2rem;
+      margin-bottom: 1.5rem;
     }
-    .category {
-      margin-top: 2rem;
-      font-weight: bold;
+    h2 {
       font-size: 1.5rem;
+      margin-top: 3rem;
+      margin-bottom: 1rem;
     }
     .cocktail-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 1rem;
-      padding: 1rem 0;
+      margin-bottom: 2rem;
     }
-    .card {
+    .cocktail-card {
+      padding: 0.75rem 1rem;
       background: white;
-      border-radius: 12px;
-      padding: 1rem;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
-      transition: 0.2s;
+      border-radius: 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
     }
-    .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    .cocktail-card:hover {
+      transform: scale(1.02);
     }
-    .card a {
-      color: #333;
+    .cocktail-card a {
       text-decoration: none;
       font-weight: bold;
+      color: #444;
+    }
+    .category-classic h2 {
+      color: #0070f3;
+    }
+    .category-house h2 {
+      color: #d97706;
+    }
+    .category-na h2 {
+      color: #047857;
+    }
+    .category-untagged h2 {
+      color: #9ca3af;
+    }
+    .back-link {
+      margin-top: 2rem;
       display: block;
     }
-    .tag {
-      font-size: 0.75rem;
-      margin-top: 0.25rem;
-      color: #666;
-    }
-    .classic { color: #1e90ff; }
-    .house { color: #f39c12; }
-    .non-alc { color: #27ae60; }
   </style>
 </head>
 <body>
   <h1>OBL Cocktail Handbook</h1>
 
-  <div id="content">
-    <div class="category">Classic</div>
-    <div class="cocktail-grid" id="classic"></div>
-    <div class="category">House Riff</div>
-    <div class="cocktail-grid" id="house"></div>
-    <div class="category">Non-Alcoholic</div>
-    <div class="cocktail-grid" id="nonalc"></div>
+  <div class="category-classic">
+    <h2>Classic</h2>
+    <div class="cocktail-grid" id="classic-list"></div>
   </div>
 
-  <footer>
-    <p><a href="/index.html">← Back to Main Portal</a></p>
-  </footer>
+  <div class="category-house">
+    <h2>House Riff</h2>
+    <div class="cocktail-grid" id="house-riff-list"></div>
+  </div>
+
+  <div class="category-na">
+    <h2>Non-Alcoholic</h2>
+    <div class="cocktail-grid" id="non-alcoholic-list"></div>
+  </div>
+
+  <div class="category-untagged">
+    <h2>Uncategorised</h2>
+    <div class="cocktail-grid" id="uncategorised-list"></div>
+  </div>
+
+  <a class="back-link" href="/index.html">← Back to Main Portal</a>
 
   <script>
     fetch('/data/cocktail_data_backup.json')
       .then(res => res.json())
       .then(data => {
-        const classic = document.getElementById('classic');
-        const house = document.getElementById('house');
-        const nonalc = document.getElementById('nonalc');
-
         data.forEach(cocktail => {
-          const div = document.createElement('div');
-          div.className = 'card';
+          const name = cocktail.name || 'Untitled';
+          const tag = (cocktail.tag || '').toLowerCase().trim();
 
-          const link = document.createElement('a');
-          link.href = `/cocktails/cocktail.html?slug=${encodeURIComponent(cocktail.slug)}`;
-          link.textContent = cocktail.title || 'Unnamed';
+          const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
+          const card = document.createElement('div');
+          card.className = 'cocktail-card';
+          card.innerHTML = `<a href="/cocktails/cocktail.html?slug=${slug}">${name}</a>`;
 
-          const tag = document.createElement('div');
-          tag.className = 'tag';
-
-          if (cocktail.tag === 'Classic') tag.classList.add('classic');
-          else if (cocktail.tag === 'House Riff') tag.classList.add('house');
-          else if (cocktail.tag === 'Non-Alcoholic') tag.classList.add('non-alc');
-
-          tag.textContent = cocktail.tag || '';
-
-          div.appendChild(link);
-          div.appendChild(tag);
-
-          if (cocktail.tag === 'Classic') classic.appendChild(div);
-          else if (cocktail.tag === 'House Riff') house.appendChild(div);
-          else if (cocktail.tag === 'Non-Alcoholic') nonalc.appendChild(div);
+          switch (tag) {
+            case 'classic':
+              document.getElementById('classic-list').appendChild(card);
+              break;
+            case 'house riff':
+              document.getElementById('house-riff-list').appendChild(card);
+              break;
+            case 'non-alcoholic':
+              document.getElementById('non-alcoholic-list').appendChild(card);
+              break;
+            default:
+              document.getElementById('uncategorised-list').appendChild(card);
+          }
         });
       })
       .catch(err => {
-        document.getElementById('content').innerHTML = '<p>Failed to load cocktail data.</p>';
-        console.error('Error loading JSON:', err);
+        console.error('Error loading cocktail data:', err);
       });
   </script>
 </body>
