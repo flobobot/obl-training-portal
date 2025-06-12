@@ -4,93 +4,48 @@
   <meta charset="UTF-8" />
   <title>Cocktail Details</title>
   <link rel="stylesheet" href="../style.css" />
-  <style>
-    .tag {
-      font-weight: bold;
-      margin-bottom: 1rem;
-      padding: 0.3rem 0.6rem;
-      border-radius: 10px;
-      display: inline-block;
-    }
-    .Classic { color: #007bff; }
-    .House { color: #ff9900; }
-    .NonAlcoholic { color: #117a65; }
-    .Uncategorised { color: #666; }
-
-    .section-label {
-      font-weight: bold;
-      margin-top: 2rem;
-      font-size: 1.1rem;
-      color: #444;
-    }
-    .card {
-      max-width: 600px;
-      margin: 2rem auto;
-      background: white;
-      padding: 2rem;
-      border-radius: 15px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      font-family: sans-serif;
-    }
-    .card h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-    .card p {
-      margin-bottom: 1rem;
-    }
-    .card pre {
-      background: #f4f4f4;
-      padding: 1rem;
-      border-radius: 10px;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-  </style>
 </head>
 <body>
-  <div class="card" id="cocktail-card">
-    <h1>Loading…</h1>
-    <p><a href="/cocktails/">← Back to Main Page</a></p>
+  <div class="card">
+    <h1 id="cocktail-name">Loading...</h1>
+    <p><a href="./index.html">← Back to Main Page</a></p>
+    <div id="cocktail-details"></div>
   </div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
     const slug = params.get("slug");
 
-    fetch("/data/cocktail_data_backup.json")
+    fetch("../data/cocktail_data_backup.json")
       .then(res => res.json())
       .then(data => {
         const cocktail = data.find(c => {
-          return c.name && c.name.toLowerCase().replace(/\s+/g, "-") === slug;
+          if (!c.name) return false;
+          return c.name.toLowerCase().replace(/\s+/g, "-") === slug;
         });
 
-        const container = document.getElementById("cocktail-card");
-
         if (!cocktail) {
-          container.innerHTML = `
-            <h1>Cocktail not found.</h1>
-            <p><a href="/cocktails/">← Back to Main Page</a></p>
-          `;
+          document.getElementById("cocktail-name").textContent = "Cocktail not found.";
           return;
         }
 
-        const tagClass = cocktail.tag?.replace(/\s+/g, '') || 'Uncategorised';
-        const tagLabel = cocktail.tag || 'Uncategorised';
+        document.getElementById("cocktail-name").textContent = cocktail.name;
 
-        container.innerHTML = `
-          <span class="tag ${tagClass}">${tagLabel}</span>
-          <h1>${cocktail.name}</h1>
-          <p><strong>Ingredients:</strong></p>
-          <pre>${cocktail.ingredients || ''}</pre>
-          <p><strong>Method:</strong></p>
-          <pre>${cocktail.method || ''}</pre>
-          <p><strong>Glassware:</strong> ${cocktail.glassware || '–'}</p>
-          <p><strong>Garnish:</strong> ${cocktail.garnish || '–'}</p>
-          ${cocktail.proTip ? `<p class="section-label">Pro Tip</p><pre>${cocktail.proTip}</pre>` : ''}
-          ${cocktail.didYouKnow ? `<p class="section-label">Did You Know?</p><pre>${cocktail.didYouKnow}</pre>` : ''}
-          <p><a href="/cocktails/">← Back to Main Page</a></p>
+        const detailHTML = `
+          <p><strong>Ingredients:</strong><br>${cocktail.ingredients.replace(/\n/g, "<br>")}</p>
+          <p><strong>Method:</strong><br>${cocktail.method}</p>
+          <p><strong>Glassware:</strong> ${cocktail.glassware}</p>
+          <p><strong>Garnish:</strong> ${cocktail.garnish}</p>
+          ${cocktail.proTip ? `<p><strong>Pro Tip:</strong><br>${cocktail.proTip}</p>` : ""}
+          ${cocktail.didYouKnow ? `<p><strong>Did You Know?</strong><br>${cocktail.didYouKnow}</p>` : ""}
+          <p><strong>Category:</strong> ${cocktail.tag || "Uncategorised"}</p>
         `;
+
+        document.getElementById("cocktail-details").innerHTML = detailHTML;
+      })
+      .catch(err => {
+        document.getElementById("cocktail-name").textContent = "Error loading data.";
+        console.error("Failed to load cocktail:", err);
       });
   </script>
 </body>
