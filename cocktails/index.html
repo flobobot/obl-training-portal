@@ -1,106 +1,251 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>OBL Cocktail Handbook</title>
-  <link rel="stylesheet" href="/style.css" />
-  <style>
-    body {
-      font-family: sans-serif;
-      background: #fffefa;
-      padding: 2rem;
-    }
-    h1 {
-      text-align: center;
-      font-size: 2rem;
-      margin-bottom: 2rem;
-    }
-    .tag-header {
-      font-size: 1.4rem;
-      margin: 2rem 0 1rem;
-      border-bottom: 2px solid #ddd;
-      padding-bottom: 0.5rem;
-    }
-    .cocktail-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 1rem;
-    }
-    .cocktail-card {
-      background: #fff;
-      border: 1px solid #eee;
-      padding: 1rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      text-align: center;
-      transition: all 0.2s ease;
-    }
-    .cocktail-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    .cocktail-card a {
-      text-decoration: none;
-      color: #000;
-      font-weight: bold;
-    }
-    footer {
-      text-align: center;
-      margin-top: 4rem;
-      font-size: 0.85rem;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cocktail Handbook</title>
+  <link href="/style.css" rel="stylesheet" />
 </head>
-<body>
-  <h1>OBL Cocktail Handbook</h1>
-  <div id="cocktail-groups"></div>
+<body class="bg-gray-100 text-gray-900">
+  <div class="max-w-6xl mx-auto p-6">
+    <h1 class="text-4xl font-bold mb-8">Cocktail Handbook</h1>
+<h2 class="text-2xl font-bold mt-8 mb-4">Classics</h2><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    <a href="/cocktails/cocktail.html?slug=disco-sour" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Disco Sour</h2>
+    </a>
+    
 
-  <footer>
-    <a href="/index.html">← Back to OBL Bartender Portal</a>
-  </footer>
+    <a href="/cocktails/cocktail.html?slug=tequila-paloma" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Tequila Paloma</h2>
+    </a>
+    
 
-  <script>
-    fetch('../data/cocktail_data_backup.json')
-      .then(response => response.json())
-      .then(data => {
-        const groups = {};
-        data.forEach(cocktail => {
-          const tag = cocktail.tag || 'Classic';
-          if (!groups[tag]) groups[tag] = [];
-          groups[tag].push(cocktail);
-        });
+    <a href="/cocktails/cocktail.html?slug=royal-kir" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Royal Kir</h2>
+    </a>
+    
 
-        const container = document.getElementById('cocktail-groups');
-        for (const [tag, cocktails] of Object.entries(groups)) {
-          const section = document.createElement('section');
-          const header = document.createElement('div');
-          header.className = 'tag-header';
-          header.textContent = tag;
-          section.appendChild(header);
+    <a href="/cocktails/cocktail.html?slug=sundance" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Sundance</h2>
+    </a>
+    
 
-          const grid = document.createElement('div');
-          grid.className = 'cocktail-grid';
+    <a href="/cocktails/cocktail.html?slug=fogcutter" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Fogcutter</h2>
+    </a>
+    
 
-          cocktails.forEach(({ title, filename }) => {
-            const card = document.createElement('div');
-            card.className = 'cocktail-card';
-            const link = document.createElement('a');
-            link.href = `/cocktails/${filename.replace('.md', '.html')}`;
-            link.textContent = title;
-            card.appendChild(link);
-            grid.appendChild(card);
-          });
+    <a href="/cocktails/cocktail.html?slug=the-dirty-martini" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">The Dirty Martini</h2>
+    </a>
+    
 
-          section.appendChild(grid);
-          container.appendChild(section);
-        }
-      })
-      .catch(err => {
-        document.getElementById('cocktail-groups').innerHTML = '<p class="text-red-600">Failed to load cocktail data.</p>';
-        console.error('Error loading JSON:', err);
-      });
-  </script>
+    <a href="/cocktails/cocktail.html?slug=mezcal-paloma" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Mezcal Paloma</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=gin-fizz" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Gin Fizz</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=flint" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Flint</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=the-whiskey-sour" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">The Whiskey Sour</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=the-margarita" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">The Margarita</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=in-the-woods" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">In the Woods</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=the-classic-negroni" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">The Classic Negroni</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=the-caipirinha" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">The Caipirinha</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=the-gibson-martini" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">The Gibson Martini</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=mezcalita" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Mezcalita</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=miso-butter-old-fashioned" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Miso Butter Old Fashioned</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=yuzu-negroni" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Yuzu Negroni</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=negroni-spagliato" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Negroni Spagliato</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=the-amaretto-sour" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">The Amaretto Sour</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=tommy-s-margarita" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Tommy's Margarita</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=garden-fizz" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Garden Fizz</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=the-classic-daiquiri" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">The Classic Daiquiri</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=the-wet-martini" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">The Wet Martini</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=classic-daiquiri" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Classic Daiquiri</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=reverse-adonis" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Reverse Adonis</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=spiced-sour" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Spiced Sour</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=tequila-rhubarb-sour" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Tequila Rhubarb Sour</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=tommy-s-margarita" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Tommy’s Margarita</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=the-perfect-manhattan" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">The Perfect Manhattan</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=french-rubi" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">French Rubi</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=the-old-fashioned" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">The Old Fashioned</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=bitters-smoke" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Bitters & Smoke</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=the-pisco-sour" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">The Pisco Sour</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=fig-negroni" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Fig Negroni</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=apricot-gin-fizz" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">Apricot Gin Fizz</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=the-martinez" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">The Martinez</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=the-dry-martini" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">The Dry Martini</h2>
+    </a>
+    
+
+    <a href="/cocktails/cocktail.html?slug=the-paper-plane" class="block rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition">
+        <div class="text-sm font-semibold text-white inline-block px-2 py-1 rounded bg-blue-500 mb-2">Classic</div>
+        <h2 class="text-xl font-bold text-gray-900">The Paper Plane</h2>
+    </a>
+    </div><h2 class="text-2xl font-bold mt-8 mb-4">House Riffs</h2><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div><h2 class="text-2xl font-bold mt-8 mb-4">Non-Alcoholics</h2><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+    <footer class="mt-16 text-center text-sm text-gray-500">
+      <a href="/index.html" class="underline">⬅ Return to Portal</a>
+    </footer>
+  </div>
 </body>
 </html>
