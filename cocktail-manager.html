@@ -2,184 +2,104 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Cocktail Card Manager v4</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cocktail Manager</title>
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #f9f9f9;
-      text-align: center;
-      margin: 0;
+      font-family: sans-serif;
       padding: 2rem;
+      background: #f4f4f4;
     }
     h1 {
       font-size: 2rem;
-    }
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1rem;
-      margin-top: 2rem;
+      margin-bottom: 1rem;
     }
     .card {
       background: white;
-      border-radius: 12px;
-      padding: 1rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-    .card-title {
-      font-weight: bold;
-    }
-    .card-tag {
-      color: grey;
-      font-size: 0.9rem;
-      margin-bottom: 0.5rem;
-    }
-    .card button {
-      margin: 0.25rem;
-    }
-    #editor {
-      position: fixed;
-      top: 10%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: white;
-      padding: 2rem;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
       border-radius: 10px;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.2);
-      display: none;
-      flex-direction: column;
-      gap: 0.5rem;
-      z-index: 10;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    input, textarea, select {
-      padding: 0.5rem;
+    .card input, .card textarea, .card select {
       width: 100%;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      font-size: 1rem;
     }
-    .backdrop {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.2);
-      display: none;
-      z-index: 5;
+    .buttons {
+      display: flex;
+      justify-content: space-between;
     }
+    button {
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .save { background: #4CAF50; color: white; }
+    .cancel { background: #ccc; }
   </style>
 </head>
 <body>
-  <h1>Cocktail Card Manager v4</h1>
-  <input type="text" id="search" placeholder="Search cocktails..." />
-  <button onclick="addNew()">+ Add New Cocktail</button>
-  <div class="card-grid" id="cardGrid"></div>
-
-  <div class="backdrop" id="backdrop" onclick="closeEditor()"></div>
-  <div id="editor">
-    <h2>Edit Cocktail</h2>
-    <input id="name" placeholder="Cocktail Name" />
-    <textarea id="ingredients" placeholder="Ingredients"></textarea>
-    <textarea id="method" placeholder="Method"></textarea>
-    <input id="glassware" placeholder="Glassware" />
-    <input id="garnish" placeholder="Garnish" />
-    <input id="proTip" placeholder="Pro Tip (optional)" />
-    <input id="didYouKnow" placeholder="Did You Know? (optional)" />
-    <select id="tag">
-      <option>Classic</option>
-      <option>House Riff</option>
-      <option>Non-Alcoholic</option>
-      <option>Uncategorised</option>
-    </select>
-    <button onclick="save()">Save</button>
-    <button onclick="download()">Download JSON</button>
-    <button onclick="closeEditor()">Cancel</button>
-  </div>
+  <h1>Cocktail Card Manager</h1>
+  <div id="manager"></div>
 
   <script>
-    let data = [];
-    let editIndex = null;
+    let data;
 
-    async function load() {
-      try {
-        const res = await fetch('data/cocktail_data_backup.json');
-        data = await res.json();
-        render();
-      } catch (e) {
-        document.getElementById('cardGrid').innerText = 'Failed to load cocktail data.';
-      }
+    async function loadData() {
+      const res = await fetch('../data/cocktail_data_backup.json');
+      data = await res.json();
+      renderCards();
     }
 
-    function render() {
-      const grid = document.getElementById('cardGrid');
-      grid.innerHTML = '';
-
-      const search = document.getElementById('search').value.toLowerCase();
-
-      data.forEach((cocktail, i) => {
-        const name = cocktail.name || 'Untitled';
-        if (!name.toLowerCase().includes(search)) return;
-
-        const tag = cocktail.tag || 'Uncategorised';
-        const div = document.createElement('div');
-        div.className = 'card';
-        div.innerHTML = `
-          <div class="card-title">${name}</div>
-          <div class="card-tag">${tag}</div>
-          <button onclick="edit(${i})">Edit</button>
-          <button onclick="del(${i})">Delete</button>
+    function renderCards() {
+      const container = document.getElementById('manager');
+      container.innerHTML = '';
+      data.forEach((cocktail, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <label>Title: <input value="${cocktail.title}" data-index="${index}" data-field="title"/></label>
+          <label>Ingredients: <textarea data-index="${index}" data-field="ingredients">${cocktail.ingredients.join('\n')}</textarea></label>
+          <label>Method: <textarea data-index="${index}" data-field="method">${cocktail.method || ''}</textarea></label>
+          <label>Pro Tip: <textarea data-index="${index}" data-field="pro_tip">${cocktail.pro_tip || ''}</textarea></label>
+          <label>Did You Know: <textarea data-index="${index}" data-field="did_you_know">${cocktail.did_you_know || ''}</textarea></label>
+          <label>Category: <input value="${cocktail.category || ''}" data-index="${index}" data-field="category"/></label>
+          <div class="buttons">
+            <button class="save" onclick="confirmSave(${index})">Save</button>
+            <button class="cancel" onclick="cancelEdit(${index})">Cancel</button>
+          </div>
         `;
-        grid.appendChild(div);
+        container.appendChild(card);
       });
     }
 
-    function edit(i) {
-      const c = data[i];
-      editIndex = i;
-      document.getElementById('name').value = c.name || '';
-      document.getElementById('ingredients').value = c.ingredients || '';
-      document.getElementById('method').value = c.method || '';
-      document.getElementById('glassware').value = c.glassware || '';
-      document.getElementById('garnish').value = c.garnish || '';
-      document.getElementById('proTip').value = c.proTip || '';
-      document.getElementById('didYouKnow').value = c.didYouKnow || '';
-      document.getElementById('tag').value = c.tag || 'Uncategorised';
-      showEditor();
+    function confirmSave(index) {
+      if (!confirm('Are you sure you want to save changes to this cocktail?')) return;
+      const inputs = document.querySelectorAll(`[data-index="${index}"]`);
+      inputs.forEach(input => {
+        const field = input.getAttribute('data-field');
+        const value = input.value.trim();
+        if (field === 'ingredients') {
+          data[index].ingredients = value.split('\n').map(l => l.trim()).filter(Boolean);
+        } else {
+          data[index][field] = value;
+        }
+      });
+      saveData();
     }
 
-    function addNew() {
-      editIndex = null;
-      document.querySelectorAll('#editor input, #editor textarea').forEach(f => f.value = '');
-      document.getElementById('tag').value = 'Uncategorised';
-      showEditor();
+    function cancelEdit(index) {
+      renderCards(); // Reload to discard changes
     }
 
-    function save() {
-      const cocktail = {
-        name: document.getElementById('name').value,
-        ingredients: document.getElementById('ingredients').value,
-        method: document.getElementById('method').value,
-        glassware: document.getElementById('glassware').value,
-        garnish: document.getElementById('garnish').value,
-        proTip: document.getElementById('proTip').value,
-        didYouKnow: document.getElementById('didYouKnow').value,
-        tag: document.getElementById('tag').value
-      };
-      if (editIndex === null) {
-        data.push(cocktail);
-      } else {
-        data[editIndex] = cocktail;
-      }
-      render();
-      closeEditor();
-    }
-
-    function del(i) {
-      if (confirm('Delete this cocktail?')) {
-        data.splice(i, 1);
-        render();
-      }
-    }
-
-    function download() {
-      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
+    function saveData() {
+      const jsonBlob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+      const url = URL.createObjectURL(jsonBlob);
       const a = document.createElement('a');
       a.href = url;
       a.download = 'cocktail_data_backup.json';
@@ -187,18 +107,7 @@
       URL.revokeObjectURL(url);
     }
 
-    function showEditor() {
-      document.getElementById('backdrop').style.display = 'block';
-      document.getElementById('editor').style.display = 'flex';
-    }
-
-    function closeEditor() {
-      document.getElementById('backdrop').style.display = 'none';
-      document.getElementById('editor').style.display = 'none';
-    }
-
-    document.getElementById('search').addEventListener('input', render);
-    load();
+    loadData();
   </script>
 </body>
 </html>
