@@ -2,84 +2,87 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cocktail Handbook</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet"/>
-  <link href="/style.css" rel="stylesheet" />
-</head>
-<body class="bg-background text-foreground font-inter p-6">
-
-  <h1 class="text-3xl font-bold mb-6">Cocktail Handbook</h1>
-
-  <div id="cocktail-container"></div>
-
-  <script>
-    const CATEGORY_ORDER = ["Classic", "House Riff", "Non-Alcoholic", "Uncategorised"];
-    const CATEGORY_COLORS = {
-      "Classic": "text-blue-600",
-      "House Riff": "text-yellow-500",
-      "Non-Alcoholic": "text-green-600",
-      "Uncategorised": "text-gray-400"
-    };
-
-    function normalizeTag(tag) {
-      const validTags = ["Classic", "House Riff", "Non-Alcoholic"];
-      if (!tag) return "Uncategorised";
-      const cleaned = tag.trim().toLowerCase();
-      const matched = validTags.find(t => t.toLowerCase() === cleaned);
-      return matched || "Uncategorised";
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OBL Cocktail Handbook</title>
+  <link rel="stylesheet" href="../login-style.css" />
+  <style>
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
     }
-
+    .card {
+      background: white;
+      border-radius: 1rem;
+      padding: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+    .tag {
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+      color: #888;
+    }
+    .Classic { color: #1e3a8a; }
+    ."House Riff" { color: #d97706; }
+    ."Non-Alcoholic" { color: #047857; }
+    .Uncategorised { color: #6b7280; }
+    h2 {
+      margin: 2rem 0 1rem;
+      font-size: 1.5rem;
+      color: #111;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1 style="text-align:center; margin-top: 2rem;">OBL Cocktail Handbook</h1>
+  <div id="cocktailContainer"></div>
+  <div style="text-align: center; margin: 2rem 0;">
+    <a href="../index.html">← Back to Main Portal</a>
+  </div>
+  <script>
     fetch('../data/cocktail_data_backup.json')
       .then(res => res.json())
       .then(data => {
-        const categorized = {};
+        const grouped = data.reduce((acc, cocktail) => {
+          const tag = cocktail.tag || 'Uncategorised';
+          if (!acc[tag]) acc[tag] = [];
+          acc[tag].push(cocktail);
+          return acc;
+        }, {});
 
-        CATEGORY_ORDER.forEach(cat => categorized[cat] = []);
+        const container = document.getElementById('cocktailContainer');
+        Object.keys(grouped).forEach(tag => {
+          const section = document.createElement('section');
+          section.innerHTML = `<h2>${tag}</h2>`;
+          const grid = document.createElement('div');
+          grid.className = 'grid';
 
-        data.forEach(cocktail => {
-          const tag = normalizeTag(cocktail.tag);
-          categorized[tag].push(cocktail);
-        });
-
-        const container = document.getElementById("cocktail-container");
-
-        CATEGORY_ORDER.forEach(category => {
-          const cocktails = categorized[category];
-          if (cocktails.length === 0) return;
-
-          const header = document.createElement("h2");
-          header.textContent = category;
-          header.className = `text-2xl font-semibold mb-4 mt-10 ${CATEGORY_COLORS[category]}`;
-          container.appendChild(header);
-
-          const grid = document.createElement("div");
-          grid.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4";
-
-          cocktails.forEach(cocktail => {
-          const card = document.createElement("a");
-          card.href = `/cocktail.html?slug=${encodeURIComponent(cocktail.slug)}`;
-          card.className = "block p-4 bg-card rounded-2xl shadow hover:shadow-lg transition duration-200 border border-border";
-
-          const name = document.createElement("h3");
-          name.textContent = cocktail.name || cocktail.title || "Untitled";
-          name.className = "text-xl font-bold mb-1";
-
-          const categoryTag = document.createElement("p");
-          categoryTag.textContent = normalizeTag(cocktail.tag);
-          categoryTag.className = `text-sm ${CATEGORY_COLORS[normalizeTag(cocktail.tag)]}`;
-
-          card.appendChild(name);
-          card.appendChild(categoryTag);
-          grid.appendChild(card);
+          grouped[tag].forEach(cocktail => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            const slug = encodeURIComponent((cocktail.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-'));
+            card.innerHTML = `
+              <a href="cocktail.html?slug=${slug}"><strong>${cocktail.title || 'Untitled'}</strong></a>
+              <div class="tag ${tag}">${tag}</div>
+            `;
+            grid.appendChild(card);
           });
 
-          container.appendChild(grid);
+          section.appendChild(grid);
+          container.appendChild(section);
         });
       })
       .catch(err => {
-        document.getElementById("cocktail-container").innerHTML = `<p class="text-red-600">Failed to load cocktails.</p>`;
-        console.error(err);
+        document.getElementById('cocktailContainer').innerHTML = '<p style="color:red;text-align:center;">Failed to load cocktails.</p>';
       });
   </script>
 </body>
