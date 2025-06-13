@@ -57,21 +57,21 @@
           grid.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4";
 
           cocktails.forEach(cocktail => {
-            const card = document.createElement("a");
-            card.href = `/cocktail.html?slug=${encodeURIComponent(cocktail.slug)}`;
-            card.className = "block p-4 bg-card rounded-2xl shadow hover:shadow-lg transition duration-200 border border-border";
+          const card = document.createElement("a");
+          card.href = `/cocktail.html?slug=${encodeURIComponent(cocktail.slug)}`;
+          card.className = "block p-4 bg-card rounded-2xl shadow hover:shadow-lg transition duration-200 border border-border";
 
-            const name = document.createElement("h3");
-            name.textContent = cocktail.name;
-            name.className = "text-xl font-bold mb-1";
+          const name = document.createElement("h3");
+          name.textContent = cocktail.name || "Untitled";
+          name.className = "text-xl font-bold mb-1";
 
-            const categoryTag = document.createElement("p");
-            categoryTag.textContent = normalizeTag(cocktail.tag);
-            categoryTag.className = `text-sm ${CATEGORY_COLORS[normalizeTag(cocktail.tag)]}`;
+          const categoryTag = document.createElement("p");
+          categoryTag.textContent = normalizeTag(cocktail.tag);
+          categoryTag.className = `text-sm ${CATEGORY_COLORS[normalizeTag(cocktail.tag)]}`;
 
-            card.appendChild(name);
-            card.appendChild(categoryTag);
-            grid.appendChild(card);
+          card.appendChild(name);
+          card.appendChild(categoryTag);
+          grid.appendChild(card);
           });
 
           container.appendChild(grid);
