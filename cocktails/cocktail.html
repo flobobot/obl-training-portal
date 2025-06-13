@@ -20,8 +20,8 @@
       .then(res => res.json())
       .then(data => {
         const cocktail = data.find(c => {
-          if (!c.name) return false;
-          return c.name.toLowerCase().replace(/\s+/g, "-") === slug;
+        if (!c.title) return false;
+        return c.title.toLowerCase().replace(/\s+/g, "-") === slug;
         });
 
         if (!cocktail) {
@@ -29,7 +29,7 @@
           return;
         }
 
-        document.getElementById("cocktail-name").textContent = cocktail.name;
+        document.getElementById("cocktail-name").textContent = cocktail.title;
 
         const detailHTML = `
           <p><strong>Ingredients:</strong><br>${cocktail.ingredients.replace(/\n/g, "<br>")}</p>
