@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OBL Cocktail Handbook</title>
-  <link rel="stylesheet" href="../login-style.css" />
+  <link rel="stylesheet" href="/login-style.css" />
   <style>
     .grid {
       display: grid;
@@ -24,10 +24,17 @@
       transform: translateY(-2px);
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
     }
+    .card a {
+      text-decoration: none;
+      font-weight: 600;
+      color: #1e3a8a;
+    }
+    .card a:hover {
+      text-decoration: underline;
+    }
     .tag {
       font-size: 0.875rem;
       margin-top: 0.5rem;
-      color: #888;
     }
     .Classic { color: #1e3a8a; }
     .House\\ Riff { color: #d97706; }
@@ -46,11 +53,11 @@
   <h1 style="text-align:center; margin-top: 2rem;">OBL Cocktail Handbook</h1>
   <div id="cocktailContainer"></div>
   <div style="text-align: center; margin: 2rem 0;">
-    <a href="../index.html">← Back to Main Portal</a>
+    <a href="/index.html">← Back to Main Portal</a>
   </div>
 
   <script>
-    fetch('../data/cocktail_data_backup.json')
+    fetch('/data/cocktail_data_backup.json')
       .then(res => res.json())
       .then(data => {
         const grouped = data.reduce((acc, cocktail) => {
@@ -72,7 +79,7 @@
             card.className = 'card';
             const slug = encodeURIComponent((cocktail.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-'));
             card.innerHTML = `
-              <a href="/cocktail.html?slug=${slug}"><strong>${cocktail.title || 'Untitled'}</strong></a>
+              <a href="/cocktail.html?slug=${slug}">${cocktail.title || 'Untitled'}</a>
               <div class="tag ${tag.replace(/ /g, '\\ ')}">${tag}</div>
             `;
             grid.appendChild(card);
