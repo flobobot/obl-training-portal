@@ -2,196 +2,160 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cocktail Card Manager v4</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #fafafa;
-      margin: 0;
-      padding: 20px;
+      background: #f9f9f9;
+      margin: 2rem;
     }
     h1 {
       text-align: center;
+      font-size: 1.8rem;
     }
-    .top-bar {
+    .controls {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 1rem;
     }
     input[type="text"] {
-      padding: 8px;
-      font-size: 16px;
+      padding: 0.5rem;
+      margin-right: 0.5rem;
       width: 250px;
     }
     button {
-      padding: 8px 12px;
-      font-size: 16px;
-      margin-left: 8px;
+      padding: 0.5rem 1rem;
     }
-    .grid {
+    .card-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
     }
     .card {
       background: white;
-      padding: 15px;
       border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 1rem;
       text-align: center;
     }
-    .card-title {
-      font-weight: bold;
-      margin-bottom: 4px;
+    .card h3 {
+      margin: 0;
+      font-size: 1rem;
     }
-    .category-label {
-      font-size: 14px;
+    .card small {
       color: gray;
-      margin-bottom: 8px;
+      display: block;
+      margin: 0.5rem 0;
     }
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      left: 0;
-      top: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0,0,0,0.6);
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background: #fff;
-      padding: 20px;
-      width: 600px;
-      max-width: 90%;
-      border-radius: 8px;
-    }
-    textarea, select, input {
-      width: 100%;
-      margin-bottom: 12px;
-      padding: 8px;
-    }
-    .actions {
-      text-align: right;
+    .card button {
+      margin: 0.2rem;
     }
   </style>
 </head>
 <body>
-  <h1>Cocktail Card Manager v4</h1>
-  <div class="top-bar">
-    <input type="text" id="searchInput" placeholder="Search cocktails...">
-    <button onclick="addNewCard()">+ Add New Cocktail</button>
-  </div>
-  <div id="grid" class="grid"></div>
 
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <h3>Edit Cocktail</h3>
-      <input type="text" id="edit-title" placeholder="Title">
-      <textarea id="edit-ingredients" placeholder="Ingredients"></textarea>
-      <textarea id="edit-method" placeholder="Method"></textarea>
-      <input type="text" id="edit-glassware" placeholder="Glassware">
-      <input type="text" id="edit-garnish" placeholder="Garnish">
-      <textarea id="edit-tip" placeholder="Pro Tip"></textarea>
-      <textarea id="edit-fact" placeholder="Did You Know?"></textarea>
-      <select id="edit-tag">
-        <option value="Classic">Classic</option>
-        <option value="House Riff">House Riff</option>
-        <option value="Non-Alcoholic">Non-Alcoholic</option>
-        <option value="Uncategorised">Uncategorised</option>
-      </select>
-      <div class="actions">
-        <button onclick="saveEdit()">Save</button>
-        <button onclick="closeModal()">Cancel</button>
-      </div>
-    </div>
+  <h1>Cocktail Card Manager v4</h1>
+
+  <div class="controls">
+    <input type="text" id="searchInput" placeholder="Search cocktails..." oninput="renderCocktails()"/>
+    <button onclick="addCocktail()">+ Add New Cocktail</button>
   </div>
+
+  <div class="card-grid" id="cocktailGrid">Loading...</div>
 
   <script>
-    let data = [];
-    let editingIndex = null;
+    const grid = document.getElementById('cocktailGrid');
+    const searchInput = document.getElementById('searchInput');
+    let cocktails = [];
 
-    async function loadData() {
+    async function fetchData() {
       try {
         const res = await fetch('/data/cocktail_data_backup.json');
-        data = await res.json();
-        renderCards();
-      } catch {
-        document.getElementById('grid').innerHTML = '<p>Failed to load cocktail data.</p>';
+        cocktails = await res.json();
+        renderCocktails();
+      } catch (err) {
+        grid.innerHTML = '<p style="color:red;">Failed to load cocktail data.</p>';
       }
     }
 
-    function renderCards() {
-      const grid = document.getElementById('grid');
-      const q = document.getElementById('searchInput').value.toLowerCase();
+    function renderCocktails() {
+      const query = searchInput.value.toLowerCase();
+      const filtered = cocktails.filter(c => c.name.toLowerCase().includes(query));
       grid.innerHTML = '';
-      data.filter(c => c.name?.toLowerCase().includes(q)).forEach((cocktail, i) => {
+      filtered.forEach((cocktail, index) => {
         const div = document.createElement('div');
         div.className = 'card';
         div.innerHTML = `
-          <div class="card-title">${cocktail.name || 'Untitled'}</div>
-          <div class="category-label">${cocktail.tag || 'Uncategorised'}</div>
-          <button onclick="editCard(${i})">Edit</button>
-          <button onclick="deleteCard(${i})">Delete</button>
+          <h3>${cocktail.name || 'Untitled'}</h3>
+          <small>${cocktail.tag || 'Uncategorised'}</small>
+          <button onclick="editCocktail(${index})">Edit</button>
+          <button onclick="deleteCocktail(${index})">Delete</button>
         `;
         grid.appendChild(div);
       });
     }
 
-    function editCard(index) {
-      editingIndex = index;
-      const c = data[index];
-      document.getElementById('edit-title').value = c.name || '';
-      document.getElementById('edit-ingredients').value = c.ingredients || '';
-      document.getElementById('edit-method').value = c.method || '';
-      document.getElementById('edit-glassware').value = c.glass || '';
-      document.getElementById('edit-garnish').value = c.garnish || '';
-      document.getElementById('edit-tip').value = c.tip || '';
-      document.getElementById('edit-fact').value = c.fact || '';
-      document.getElementById('edit-tag').value = c.tag || 'Uncategorised';
-      document.getElementById('modal').style.display = 'flex';
+    function editCocktail(index) {
+      const c = cocktails[index];
+      const fields = ['name', 'ingredients', 'method', 'glass', 'garnish', 'proTip', 'didYouKnow', 'tag'];
+      let form = fields.map(f => `
+        <label>${f.charAt(0).toUpperCase() + f.slice(1)}:<br/>
+          <textarea rows="2" style="width:100%" id="edit-${f}">${c[f] || ''}</textarea>
+        </label>
+      `).join('<br/>');
+      const modal = document.createElement('div');
+      modal.style.position = 'fixed';
+      modal.style.top = '0'; modal.style.left = '0';
+      modal.style.width = '100%'; modal.style.height = '100%';
+      modal.style.background = 'rgba(0,0,0,0.3)';
+      modal.style.display = 'flex'; modal.style.alignItems = 'center'; modal.style.justifyContent = 'center';
+      modal.innerHTML = `
+        <div style="background:white; padding:1rem; border-radius:12px; width:90%; max-width:600px;">
+          <h2>Edit Cocktail</h2>
+          ${form}
+          <br/>
+          <button onclick="saveEdit(${index})">Save</button>
+          <button onclick="document.body.removeChild(this.parentElement.parentElement)">Cancel</button>
+        </div>
+      `;
+      document.body.appendChild(modal);
     }
 
-    function closeModal() {
-      document.getElementById('modal').style.display = 'none';
+    function saveEdit(index) {
+      const fields = ['name', 'ingredients', 'method', 'glass', 'garnish', 'proTip', 'didYouKnow', 'tag'];
+      fields.forEach(f => {
+        cocktails[index][f] = document.getElementById(`edit-${f}`).value.trim();
+      });
+      downloadJSON();
+      document.body.querySelector('div[style*="position: fixed"]').remove();
+      renderCocktails();
     }
 
-    function saveEdit() {
-      if (!confirm("Are you sure you want to save changes to this cocktail?")) return;
-      const updated = {
-        name: document.getElementById('edit-title').value,
-        ingredients: document.getElementById('edit-ingredients').value,
-        method: document.getElementById('edit-method').value,
-        glass: document.getElementById('edit-glassware').value,
-        garnish: document.getElementById('edit-garnish').value,
-        tip: document.getElementById('edit-tip').value,
-        fact: document.getElementById('edit-fact').value,
-        tag: document.getElementById('edit-tag').value
-      };
-      data[editingIndex] = updated;
-      closeModal();
-      renderCards();
+    function addCocktail() {
+      cocktails.push({ name: '', tag: 'Uncategorised' });
+      renderCocktails();
     }
 
-    function deleteCard(index) {
-      if (confirm('Delete this cocktail?')) {
-        data.splice(index, 1);
-        renderCards();
+    function deleteCocktail(index) {
+      if (confirm("Are you sure you want to delete this cocktail?")) {
+        cocktails.splice(index, 1);
+        renderCocktails();
       }
     }
 
-    function addNewCard() {
-      const blank = {
-        name: '', ingredients: '', method: '', glass: '', garnish: '', tip: '', fact: '', tag: 'Uncategorised'
-      };
-      data.push(blank);
-      renderCards();
+    function downloadJSON() {
+      const blob = new Blob([JSON.stringify(cocktails, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'cocktail_data_backup.json';
+      a.click();
+      URL.revokeObjectURL(url);
     }
 
-    document.getElementById('searchInput').addEventListener('input', renderCards);
-    loadData();
+    fetchData();
   </script>
+
 </body>
 </html>
