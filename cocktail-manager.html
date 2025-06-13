@@ -219,21 +219,7 @@
       editingIndex = null;
     }
 
-    async function saveCocktailToServer(cocktail) {
-      try {
-        const res = await fetch('/.netlify/functions/saveCocktail', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(cocktail)
-        });
-        if (!res.ok) throw new Error(await res.text());
-        console.log("✅ Cocktail saved to server.");
-      } catch (err) {
-        console.error("❌ Error saving cocktail:", err);
-      }
-    }
-
-    function saveCocktail() {
+    async function saveCocktail() {
       if (!confirm('Are you sure you want to save changes to this cocktail?')) return;
 
       const c = {
@@ -248,9 +234,24 @@
       };
 
       cocktails[editingIndex] = c;
-      saveCocktailToServer(c);
       renderCocktails();
       closeModal();
+
+      try {
+        const res = await fetch('/.netlify/functions/save-cocktail-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(cocktails)
+        });
+
+        if (!res.ok) throw new Error('Failed to save to server');
+        const result = await res.json();
+        alert('Cocktail saved successfully.');
+        console.log(result);
+      } catch (err) {
+        alert('Failed to save cocktail data. Please try again.');
+        console.error(err);
+      }
     }
 
     function deleteCocktail(index) {
