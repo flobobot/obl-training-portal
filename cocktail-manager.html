@@ -70,14 +70,15 @@
     let cocktails = [];
 
     async function fetchData() {
-      try {
-        const res = await fetch('data/cocktail_data_backup.json');
-        cocktails = await res.json();
-        renderCocktails();
-      } catch (err) {
-        grid.innerHTML = '<p style="color:red;">Failed to load cocktail data.</p>';
-      }
-    }
+  try {
+    const res = await fetch('data/cocktail_data_backup.json');
+    cocktails = await res.json();
+    renderCocktails();
+  } catch (error) {
+    console.error('Failed to load cocktail data:', error);
+    document.body.innerHTML = '<p style="color: red;">Failed to load cocktail data.</p>';
+  }
+}
 
     function renderCocktails() {
       const query = searchInput.value.toLowerCase();
