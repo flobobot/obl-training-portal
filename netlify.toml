@@ -2,11 +2,11 @@
 publish = "."
 
 [[redirects]]
-  from = "/cocktails/*"
-  to = "/cocktails/index.html"
-  status = 200
+from = "/cocktails/*"
+to = "/cocktails/index.html"
+status = 200
 
 [[redirects]]
-  from = "/cocktail.html"
-  to = "/cocktail.html"
-  status = 200
+from = "/cocktail.html"
+to = "/cocktail.html"
+status = 200
