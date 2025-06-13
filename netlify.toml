@@ -1,2 +1,7 @@
 [build]
 publish = "."
+
+[[redirects]]
+  from = "/cocktails/*"
+  to = "/cocktails/index.html"
+  status = 200
