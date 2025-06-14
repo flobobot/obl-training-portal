@@ -9,12 +9,25 @@
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       background: #f9f9f9;
       margin: 0;
-      padding: 2rem;
+      padding: 0;
       color: #222;
+    }
+    nav {
+      background: #1f2937;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav a {
+      color: white;
+      margin-left: 1rem;
+      text-decoration: none;
+      font-weight: 500;
     }
     .card {
       max-width: 700px;
-      margin: 0 auto;
+      margin: 2rem auto;
       background: white;
       padding: 2rem;
       border-radius: 1rem;
@@ -42,6 +55,16 @@
   </style>
 </head>
 <body>
+  <nav>
+    <div style="font-weight: bold; color: white;">OBL Training</div>
+    <div>
+      <a href="/training.html">Training</a>
+      <a href="/login.html">Login</a>
+      <a href="/admin.html">Admin</a>
+      <a href="/milestone.html">Milestone</a>
+    </div>
+  </nav>
+
   <div class="card" id="cocktailCard">
     <h1>Loading...</h1>
     <p><a class="back-link" href="/cocktails/">← Back to Main Page</a></p>
@@ -56,7 +79,6 @@
       try {
         const res = await fetch("/data/cocktail_data_backup.json");
         const data = await res.json();
-
         const cocktail = data.find(item => item.slug === slug);
 
         if (!cocktail) {
